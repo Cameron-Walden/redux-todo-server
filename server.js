@@ -41,4 +41,14 @@ const todos = [
 
 app.get('/todos', (req, res) => res.send(todos))
 
+app.post('/todos', (req, res) => {
+    const todo = {
+        title: req.body.title,
+        id: nanoid(),
+        completed: false,
+    };
+    todos.push(todo);
+    res.send(todo);
+});
+
 app.listen(PORT, () => console.log(`listening on ${PORT}`))
