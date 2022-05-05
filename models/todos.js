@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
+const { nanoid } = require('nanoid');
 const { Schema } = mongoose;
 
 const todosSchema = new Schema({
-    task: {type: String, required: true},
+    _id: { type: String, required: true, default: () => nanoid() },
+    title: {type: String, required: true},
     completed: {type: Boolean, required: true}
 });
 
