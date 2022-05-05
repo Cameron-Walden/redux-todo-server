@@ -1,54 +1,43 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const cors = require('cors');
-const bodyParser = require('body-parser')
-const { nanoid } = require('nanoid')
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const Todo = require("./models/todos");
+
+mongoose.connect(process.env.DB_URL);
+
+const db = mongoose.connection;
+
+db.on("error", console.error.bind(console, "connection error:"));
+db.once("open", () => console.log("Mongoose is connected"));
 
 const app = express();
 
 const PORT = 3001;
 
 app.use(cors());
-app.use(bodyParser.json())
+app.use(express.json());
 
-const todos = [
-	{
-		id: nanoid(),
-		title: 'walk donte',
-		completed: false,
-	},
-	{
-		id: nanoid(),
-		title: 'clean car',
-		completed: true,
-	},
-	{
-		id: nanoid(),
-		title: 'vaccum',
-		completed: false,
-	},
-	{
-		id: nanoid(),
-		title: 'do dishes',
-		completed: true,
-	},
-	{
-		id: nanoid(),
-		title: 'windex',
-		completed: false,
-	},
-];
+app.get("/todos", getTodos);
+app.post("/todos", createTodos);
 
-app.get('/todos', (req, res) => res.send(todos))
+async function getTodos(req, res) {
+  try {
+    const todos = {};
+    const results = await Todo.find(todos);
+    res.status(200).send(results);
+  } catch (error) {
+    console.log(error, "error inside of getTodos");
+  }
+}
 
-app.post('/todos', (req, res) => {
-    const todo = {
-        title: req.body.title,
-        id: nanoid(),
-        completed: false,
-    };
-    todos.push(todo);
-    res.send(todo);
-});
+async function createTodos(req, res) {
+  try {
+    const createTodo = await Todo.create(req.body);
+    res.status(200).send(createTodo);
+  } catch (error) {
+    console.log(error, "error inside of createTodos");
+  }
+}
 
-app.listen(PORT, () => console.log(`listening on ${PORT}`))
+app.listen(PORT, () => console.log(`listening on ${PORT}`));
