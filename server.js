@@ -20,6 +20,7 @@ app.use(express.json());
 
 app.get("/todos", getTodos);
 app.post("/todos", createTodos);
+app.delete("/todos/:id", deleteTodos);
 
 async function getTodos(req, res) {
   try {
@@ -37,6 +38,16 @@ async function createTodos(req, res) {
     res.status(200).send(createTodo);
   } catch (error) {
     console.log(error, "error inside of createTodos");
+  }
+}
+
+async function deleteTodos(req, res) {
+  const id = req.params.id;
+  try {
+    await Todo.findByIdAndDelete(id);
+    res.send("your todo has been deleted");
+  } catch (error) {
+    console.log(error, "error inside of deleteTodos");
   }
 }
 
