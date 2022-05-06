@@ -3,7 +3,7 @@ const { nanoid } = require('nanoid');
 const { Schema } = mongoose;
 
 const todosSchema = new Schema({
-    _id: { type: String, required: true, default: () => nanoid() },
+    _id: { type: String, required: false, default: () => nanoid() },
     title: {type: String, required: true},
     completed: {type: Boolean, required: true}
 });
